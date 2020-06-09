@@ -1,7 +1,7 @@
 const express = require("express"); 
 const app = express();
 const fs = require("fs");
-const gradesRouter  = require("../routes/grades.js");
+const gradesRouter  = require("../routes/routes.js");
 
 global.fileName = "../files/grades.json"
 
@@ -28,5 +28,6 @@ app.listen(3000, function () {
     } catch (error) {
         res.status(400).send({error: error.message});
     }
+
     console.log("Api Started!");
 });
