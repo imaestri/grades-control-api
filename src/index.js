@@ -1,0 +1,32 @@
+const express = require("express"); 
+const app = express();
+const fs = require("fs");
+const gradesRouter  = require("../routes/grades.js");
+
+global.fileName = "../files/grades.json"
+
+
+app.use(express.json());
+app.use("/grades", gradesRouter);
+
+
+app.listen(3000, function () {
+    try {
+        fs.readFile(global.fileName,"utf8", (error, data) => {
+            if(error){
+                const initialJson = {
+                    nextId: 1,
+                    grades: [],
+                };
+                fs.writeFile(global.fileName, JSON.stringify(initialJson), (error) =>{
+                    if(error){
+                        res.status(400).send({error: error.message});
+                    };
+                });
+            }
+        });
+    } catch (error) {
+        res.status(400).send({error: error.message});
+    }
+    console.log("Api Started!");
+});
