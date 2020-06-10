@@ -33,9 +33,13 @@ router.get("/:student/:subject", (req, res) => {
    fs.readFile(global.fileName, "utf8", (err, data) => {
     if(!err){
         let jsonData  = JSON.parse(data);
-        const getStudent = jsonData.grades.filter(grade => grade.student === req.params.student && grade.subject === req.params.subject);
-        if(getStudent){
-            res.send(getStudent);
+        const getStudent = jsonData.grades.filter(grade => grade.student === req.params.student && grade.subject === req.params.subject)
+        .reduce((accumulator, current) => {
+            return accumulator += current.value
+        }, 0);
+        let getStudentFormat  = JSON.stringify({total: getStudent});
+        if(getStudentFormat){
+            res.send(getStudentFormat);
         }else{
             res.end();
         }
@@ -44,6 +48,7 @@ router.get("/:student/:subject", (req, res) => {
     }
    });
 });
+
 
 router.get("/:id", (req, res)=> {
     fs.readFile(global.fileName, "utf8", (err, data) =>{
