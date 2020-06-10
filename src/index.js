@@ -20,13 +20,13 @@ app.listen(3000, function () {
                 };
                 fs.writeFile(global.fileName, JSON.stringify(initialJson), (error) =>{
                     if(error){
-                        res.status(400).send({error: error.message});
+                       
                     };
                 });
             }
         });
-    } catch (error) {
-        res.status(400).send({error: error.message});
+    }catch(error) {
+        
     }
 
     console.log("Api Started!");

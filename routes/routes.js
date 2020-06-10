@@ -29,12 +29,36 @@ router.post("/", (req, res) => {
     });
 });
 
-router.get("/", (req, res) => {
-    res.send("ok");
+router.get("/:student/:subject", (req, res) => {
+   fs.readFile(global.fileName, "utf8", (err, data) => {
+    if(!err){
+        let jsonData  = JSON.parse(data);
+        const getStudent = jsonData.grades.filter(grade => grade.student === req.params.student && grade.subject === req.params.subject);
+        if(getStudent){
+            res.send(getStudent);
+        }else{
+            res.end();
+        }
+    }else{
+        res.status(400).send({error: err.message});
+    }
+   });
 });
 
 router.get("/:id", (req, res)=> {
-
+    fs.readFile(global.fileName, "utf8", (err, data) =>{
+        if(!err){
+            let jsonData = JSON.parse(data);
+            const grade = jsonData.grades.find(grade => grade.id === parseInt(req.params.id, 10));
+        if(grade){
+            res.send(grade);
+        }else{
+            res.end();
+        }
+        }else{
+            res.status(400).send({error: err.message});
+        }
+    });
 });
 
 router.put("/", (req, res)=>{
