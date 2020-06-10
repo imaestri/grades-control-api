@@ -32,8 +32,8 @@ router.post("/", (req, res) => {
 router.get("/:student/:subject", (req, res) => {
    fs.readFile(global.fileName, "utf8", (err, data) => {
     if(!err){
-        let jsonData  = JSON.parse(data);
-        const getStudent = jsonData.grades.filter(grade => grade.student === req.params.student && grade.subject === req.params.subject)
+        let json  = JSON.parse(data);
+        const getStudent = json.grades.filter(grade => grade.student === req.params.student && grade.subject === req.params.subject)
         .reduce((accumulator, current) => {
             return accumulator += current.value
         }, 0);
@@ -50,6 +50,30 @@ router.get("/:student/:subject", (req, res) => {
 });
 
 
+router.get("/:subject/:type", (req, res) =>{
+    fs.readFile(global.fileName, "utf8", (err, data) => {
+        if(!err){
+            let jsonData = JSON.parse(data);
+            const getSubject = jsonData.grades.filter((grade) =>{
+                return grade.subject === req.params.subject && grade.type === req.params.type
+            });
+            const sizeArray = getSubject.length;
+            const reduceSubject =  getSubject.reduce((accumulator, current) =>{
+                return accumulator += current.value/sizeArray   
+            },0);
+           let getSubjectFormat = JSON.stringify({média: reduceSubject});
+           if(getSubjectFormat){
+               res.send(getSubjectFormat);
+           }else{
+               res.end();
+           }
+        }else{ 
+            res.status(400).send({error: err.message});
+        }
+    });
+});
+
+
 router.get("/:id", (req, res)=> {
     fs.readFile(global.fileName, "utf8", (err, data) =>{
         if(!err){
@@ -60,10 +84,10 @@ router.get("/:id", (req, res)=> {
         }else{
             res.end();
         }
-        }else{
-            res.status(400).send({error: err.message});
-        }
-    });
+    }else{
+        res.status(400).send({error: err.message});
+    }
+});
 });
 
 router.put("/", (req, res)=>{
