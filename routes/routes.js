@@ -73,6 +73,27 @@ router.get("/:subject/:type", (req, res) =>{
     });
 });
 
+router.get("/:subject/:type", (req, res) =>{
+    fs.readFile(global.fileName, "utf8", (err, data) =>{
+        if(!err){
+            let jsonData = JSON.parse(data);
+            const getSubject = jsonData.grades.filter((grade)=>{
+                return grade.subject === req.params.subject && grade.type === req.params.type
+            }).sort(function (a,b){
+                return b.value - a.value; 
+            }).slice(0,3);
+            console.log(getSubject);
+            let getSubjectFormat = JSON.stringify({top3: getSubject});
+            if(getSubjectFormat){
+                res.send(getSubjectFormat);
+            }else{
+                res.end();
+            }
+        }else{
+            res.status(400).send({error: err.message});
+        }
+    });
+});
 
 router.get("/:id", (req, res)=> {
     fs.readFile(global.fileName, "utf8", (err, data) =>{
@@ -90,17 +111,12 @@ router.get("/:id", (req, res)=> {
 });
 });
 
-router.put("/", (req, res)=>{
 
-});
 
 router.put("/:id", (req, res)=>{
 
 });
 
-router.delete("/", (req, res) => {
-
-});
 
 router.delete("/:id", (req, res) => {
 
